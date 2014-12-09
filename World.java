@@ -1,26 +1,22 @@
 
-import java.util.Random;
-import java.util.stream.IntStream;
+import java.util.*;
 
 public class World {
 
-    int distance = 10;
-    int keepTrack = 1;
-    int pi = 39393939;
-    boolean fight = true;
-
+    Day currDay = new Day();
+    BadEvent badE = new BadEvent();
+    double distance = badE.getDistance();
     String[] items = {"staff", "sword", "gold", "hello"};
 
     public World() {
 
     }
 
-    public void attack(Object attacker, Object defender) {
-        int health = ((Character) defender).getHealth();
-        ((Character) defender).setHealth(health - 1);
+    public double totalDistance() { //get distance
+        return this.distance;
     }
 
-    public void grab(Player me, Npc enemy, String item) {
+    public void grab(Player me, Npc enemy, String item) { //grab item
         if (enemy.dead()) {
             if (enemy.hasItem()) {
                 if (item.equals(enemy.getItem())) {
@@ -32,38 +28,11 @@ public class World {
                 System.out.println("There is not an item in sight!");
             }
         } else {
-            System.out.println("There is not an item");
+            System.out.println("There is no item");
         }
     }
 
-    public void fight(Player me, Npc enemy) {
-
-        System.out.println("You have entered a fight.");
-        for (;;) {
-            if (fight == true) {
-                if (enemy.dead()) {
-                    System.out.println("Monster is dead! You have won!");
-                    if (enemy.hasItem()) {
-                        System.out.println("Monster has dropped a " + enemy.getItem());
-                    }
-                    fight = false;
-                    break;
-                }
-                attack(me, enemy);
-                fight = false;
-            } else if (fight == false) {
-                if (me.dead()) {
-                    System.out.println("You have died");
-                    break;
-                }
-                System.out.println("You have been attacked");
-                attack(enemy, me);
-                fight = true;
-            }
-        }
-    }
-
-    public void run(Player me, Npc enemy) {
+    public void run(Player me, Npc enemy, World world) {//run from fight
         int myAgility = me.getAgility();
         int enemyAgility = enemy.getAgility();
 
@@ -81,24 +50,46 @@ public class World {
         return r;
     }
 
-    public void walk(Player me, Npc monster) {
-        me.setHunger(-1);
-        if (keepTrack == 7) {
-            keepTrack = 0;
+    public void walk(Player me, Npc monster, World world) { //walking
+        me.walkHunger(-1);
+
+        if (currDay.isDay == true) { //goodevent
+            GoodEvent goodevent = new GoodEvent();
+            Random randVal = new Random();
+            int good = randVal.nextInt(20);
+            if (good == 0) {
+                goodevent.berryBush(me);
+                good++;
+            } else if (good == 1) {
+                goodevent.foundDryWood(me);
+                good++;
+            } else if (good == 2) {
+                goodevent.foundRabbit(me);
+                good++;
+            } else if (good == 3) {
+                goodevent.foundWetWood(me);
+                good++;
+            } else if (good == 4) {
+                goodevent.foundDryGrass(me);
+
+            }
+            badE.badIncrease(50);
+
+        } else {
+            badE.badIncrease(90);
         }
 
-        int rand = intAt(pi, keepTrack);
-        keepTrack++;
+        if (badE.getDistance() <= 30) {//badevent
 
-        distance--;
-        if (rand >= 5 && distance == 0) { //goodevent
-            System.out.println("You have found an item" + rand);
-            distance = 10;
-        } else if (rand < 5 && distance == 0) {//badevent
             System.out.println("You have stumbled into a monster");
-            distance = 10;
-            fight(me, monster);
+
+            badE.stumbledIntoMonster(me, monster, world);
         }
+        /*
+        
+         // This code tells us how close we are to a bad event or fight 
+         System.out.print("bad distance: " + badE.getDistance());
+         */
 
     }
 
