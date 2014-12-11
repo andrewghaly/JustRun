@@ -144,13 +144,13 @@ public final class Player extends Character {
     public void useHelmet(Player me) {
         me.incMaxHealth(3);
         me.removeInvNoOutput("helmet");
-        System.out.println("You have equipped you helmet!");
+        System.out.println("You have equipped your helmet!");
     }
 
     public void useBoots(Player me) {
         me.incMaxHealth(2);
         me.removeInvNoOutput("boots");
-        System.out.println("You have equipped you boots!");
+        System.out.println("You have equipped your boots!");
     }
 
     public void useInventory(String a, Player me) { //use an item in inventory
