@@ -3,15 +3,11 @@ import java.util.*;
 
 public class World {
 
-    Day currDay = new Day();
-    BadEvent badE = new BadEvent();
-    double distance = badE.getDistance();
-    String[] items = {"staff", "sword", "gold", "hello"};
-    Boolean isFire = false;
+    private final Day currDay = new Day();
+    private final BadEvent badE = new BadEvent();
+    private final double distance = badE.getDistance();
 
-    public World() {
-
-    }
+    private Boolean isFire = false;
 
     public double totalDistance() { //get distance
         return this.distance;
@@ -33,7 +29,7 @@ public class World {
                 System.out.println("There is not an item in sight!");
             }
         } else {
-            System.out.println("There is not item");
+            System.out.println("There is no item to grab");
         }
     }
 

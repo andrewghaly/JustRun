@@ -3,6 +3,7 @@ public class Character {
 
     int[] intStats = {0, 0, 0, 0, 0, 0};
     String name = "";
+    int maxHealth = 10;
     String[] stringStats = {"agility", "strength", "health", "magic", "intelligence", "total"};
 
     public Character(String a, int[] b) { //set character
@@ -11,13 +12,17 @@ public class Character {
         this.intStats[5] = intStats[0] + intStats[1] + intStats[2] + intStats[3] + intStats[4];
     }
 
+    public void incMaxHealth(int i) {
+        maxHealth += i;
+    }
+
     public int getHealth() { //get health of a character
         int a = intStats[2];
         return a;
     }
 
     public void setHealth(int a) { //set health of character
-        if ((getHealth() + a) > 10) {
+        if ((getHealth() + a) > maxHealth) {
             intStats[2] = 10;
         } else {
             intStats[2] = getHealth() + a;

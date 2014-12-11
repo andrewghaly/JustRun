@@ -4,8 +4,8 @@ import java.util.TimerTask;
 
 public class Day {
 
-    static boolean isDay = false;
-    static int manyDays;
+    public static boolean isDay = false;
+    private static int manyDays;
 
     BadEvent badness = new BadEvent();
 

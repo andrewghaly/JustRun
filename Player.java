@@ -1,9 +1,9 @@
 
 public final class Player extends Character {
 
-    String[] inventory = new String[10];
-    String[] nameFoods = {"Berries", "RawMeat", "BeefJerky", "CookedMeet", "GoldenApple"};
-    String[] usableItems = {"SleepingBag"};
+    private final String[] inventory = new String[10];
+    private final String[] nameFoods = {"Berries", "RawMeat", "BeefJerky", "CookedMeet", "GoldenApple"};
+    private final String[] usableItems = {"SleepingBag", "Boots", "Helmet"};
 
     int[] statsFoods = {10, 20, 30, 40, 100};
     int hunger = 100;
@@ -141,11 +141,27 @@ public final class Player extends Character {
         System.out.println("You have slept through the night!");
     }
 
-    public void useInventory(String a) { //use an item in inventory
+    public void useHelmet(Player me) {
+        me.incMaxHealth(3);
+        me.removeInvNoOutput("helmet");
+        System.out.println("You have equipped you helmet!");
+    }
+
+    public void useBoots(Player me) {
+        me.incMaxHealth(2);
+        me.removeInvNoOutput("boots");
+        System.out.println("You have equipped you boots!");
+    }
+
+    public void useInventory(String a, Player me) { //use an item in inventory
         if (inInventory(a)) {
             if (usableItem(a)) {
                 if (a.equalsIgnoreCase("SleepingBag")) {
                     useSleepingbag();
+                } else if (a.equalsIgnoreCase("helmet")) {
+                    useHelmet(me);
+                } else if (a.equalsIgnoreCase("boots")) {
+                    useBoots(me);
                 }
             } else {
                 System.out.println("Item is a non-usable item");

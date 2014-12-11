@@ -48,7 +48,8 @@ public class BadEvent {
     public void fight(Player me, Npc enemy, World world) {
         boolean fight = true;
         Input.setFight(true);
-
+        enemy.setHealth(2);
+        enemy.setItem(enemy.randItem());
         while (true) {
             if (me.dead()) {
                 if (Day.getDays() == 1) {
@@ -57,6 +58,7 @@ public class BadEvent {
                     System.out.println("You are dead! You lasted " + Day.getDays() + " days.");
                 }
                 Start game = new Start();
+                Input.setFight(false);
                 game.titleScreen();
                 break;
 
@@ -65,8 +67,8 @@ public class BadEvent {
 
                 System.out.println("Monster is dead! You have Won!");
                 Input.setFight(false);
-                enemy.setHealth(2); //creates monster that is one health stronger
 
+                //creates monster that is one health stronger
                 me.setAgility(me.getAgility() + 1); //set your stats larger since you won
                 me.setMagic(me.getMagic() + 1);
                 me.setStrength(me.getStrength() + 1);

@@ -3,12 +3,12 @@ import java.util.Scanner;
 
 public class Input {
 
-    String[] input = {"backpack", "stats", "help", "walk", "fight", "run", "drop", "grab", "exit", "eat", "hunger", "use", "fire", "cook"};
-    Player me = null;
-    Npc enemy = null;
-    World world = null;
-    String tempCommand;
-    static boolean fight = false;
+    private final String[] input = {"backpack", "stats", "help", "walk", "fight", "run", "drop", "grab", "exit", "eat", "hunger", "use", "fire", "cook"};
+    private Player me = null;
+    private Npc enemy = null;
+    private World world = null;
+    private String tempCommand;
+    private static boolean fight = false;
 
     Day currentDay = new Day();
     BadEvent badDay = new BadEvent();
@@ -127,7 +127,7 @@ public class Input {
                     System.out.println("Correct usage: use <item> (e.g. item must be a usable item)");
                     readInput(me, enemy, world);
                 }
-                me.useInventory(tempCommand);
+                me.useInventory(tempCommand, me);
                 readInput(me, enemy, world);
             } else if (command.equalsIgnoreCase(input[12])) {//fire commnad
                 me.makeFire(world);
