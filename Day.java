@@ -4,7 +4,8 @@ import java.util.TimerTask;
 
 public class Day {
 
-    boolean isDay = true;
+    static boolean isDay = false;
+    static int manyDays;
 
     BadEvent badness = new BadEvent();
 
@@ -17,15 +18,14 @@ public class Day {
 
                     @Override
                     public void run() {
-                        if (isDay == true) {
-                            System.out.println("Day time");
-                            //badness.badIncrease(10);
-                            isDay = false;
-                        } else {
-                            System.out.println("Night time");
-                            //  badness.badIncrease(50);
+                        if (isDay == false) {
+                            System.out.print("Day time\n>> ");
 
                             isDay = true;
+                        } else {
+                            System.out.print("Night time\n>> ");
+                            manyDays++;
+                            isDay = false;
                         }
                     }
                 },
@@ -34,6 +34,19 @@ public class Day {
     }
 
     public boolean dayCheck() {
-        return this.isDay;
+        System.out.println("Day Time");
+        return Day.isDay;
+    }
+
+    public static void setDay(Boolean a) {
+        isDay = a;
+    }
+
+    public static void resetDays() {
+        manyDays = 0;
+    }
+
+    public static int getDays() {
+        return manyDays;
     }
 }

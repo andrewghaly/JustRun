@@ -17,14 +17,28 @@ public class Character {
     }
 
     public void setHealth(int a) { //set health of character
-        intStats[2] = a;
+        if ((getHealth() + a) > 10) {
+            intStats[2] = 10;
+        } else {
+            intStats[2] = getHealth() + a;
+        }
+
     }
 
-    public boolean dead() { //check if character is dead
-        if (intStats[2] > 0) {
-            return false;
-        }
-        return true;
+    public void setAgility(int a) { //set health of character
+        intStats[0] = a;
+    }
+
+    public void setStrength(int a) { //set health of character
+        intStats[1] = a;
+    }
+
+    public void setMagic(int a) { //set health of character
+        intStats[4] = a;
+    }
+
+    public boolean dead() {
+        return intStats[2] <= 0;
 
     }
 
@@ -43,9 +57,19 @@ public class Character {
         return a;
     }
 
+    public int getMagic() {
+        int a = intStats[3];
+        return a;
+    }
+
+    public int getStrength() {
+        int a = intStats[1];
+        return a;
+    }
+
     public void setStats(String a, int b) { //change all stats to int b
         for (int i = 0; i < stringStats.length; i++) {
-            if (a.equals((stringStats[i]))) {
+            if (a.equalsIgnoreCase((stringStats[i]))) {
                 intStats[i] += b;
             }
         }

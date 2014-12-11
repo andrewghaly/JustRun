@@ -1,8 +1,10 @@
 
-public class Player extends Character {
+public final class Player extends Character {
 
     String[] inventory = new String[10];
     String[] nameFoods = {"Berries", "RawMeat", "BeefJerky", "CookedMeet", "GoldenApple"};
+    String[] usableItems = {"SleepingBag"};
+
     int[] statsFoods = {10, 20, 30, 40, 100};
     int hunger = 100;
 
@@ -39,7 +41,7 @@ public class Player extends Character {
     public boolean isFood(String a) { //check if item is food
         int track = 0;
         for (int i = 0; i < nameFoods.length; i++) {
-            if (a.equals(nameFoods[i])) {
+            if (a.equalsIgnoreCase(nameFoods[i])) {
                 track++;
                 break;
             }
@@ -51,19 +53,24 @@ public class Player extends Character {
     public boolean inInventory(String a) {//check if item is in inventory
         int track = 0;
         for (int i = 0; i < inventory.length; i++) {
-            if (a.equals(inventory[i])) {
+            if (a.equalsIgnoreCase(inventory[i])) {
                 track++;
-
+                break;
             }
         }
-        return track != 0;
+
+        if (track == 1) {
+            return true;
+        } else {
+            return false;
+        }
 
     }
 
     public int foodValue(String a) {//Return value of food good
         int carry = 0;
         for (int i = 0; i < nameFoods.length; i++) {
-            if (a.equals(nameFoods[i])) {
+            if (a.equalsIgnoreCase(nameFoods[i])) {
                 carry = i;
                 break;
             }
@@ -76,14 +83,111 @@ public class Player extends Character {
     public void removeInventory(String a, Boolean b) { //remove item from inventory
         int track = 0;
         if (inInventory(a)) {
-            if (isFood(a)) {
+            if (b) {
                 System.out.println("You ate " + a);
             } else {
                 System.out.println("You dropped " + a);
 
             }
             for (int i = 0; i < inventory.length; i++) {
-                if (a.equals(inventory[i])) {
+                if (a.equalsIgnoreCase(inventory[i])) {
+                    inventory[i] = "";
+                    break;
+                }
+            }
+        } else {
+            System.out.println("You do not have that item in your backpack, type backpack");
+        }
+    }
+
+    public void setHunger(int a) {
+        if ((hunger + a) > 100) {
+            hunger = 100;
+        } else {
+            hunger += a;
+        }
+    }
+
+    public void eatFood(String a) { //eat the food
+        if (inInventory(a)) { //checking inv
+            if (isFood(a)) { //checking if food
+                setHunger(foodValue(a));
+                setHealth(getHealth() + foodValue(a) / 10);
+                removeInventory(a, true);
+            }
+        }
+    }
+
+    public Boolean usableItem(String a) { //check if item is a usable item (compares String to usableItems array)
+
+        int track = 0;
+        for (int i = 0; i < usableItems.length; i++) {
+            if (a.equalsIgnoreCase(inventory[i])) {
+                track++;
+                break;
+            }
+        }
+
+        if (track == 1) {
+            return true;
+        } else {
+            return false;
+        }
+
+    }
+
+    public void useSleepingbag() {
+        Day.setDay(false);
+        System.out.println("You have slept through the night!");
+    }
+
+    public void useInventory(String a) { //use an item in inventory
+        if (inInventory(a)) {
+            if (usableItem(a)) {
+                if (a.equalsIgnoreCase("SleepingBag")) {
+                    useSleepingbag();
+                }
+            } else {
+                System.out.println("Item is a non-usable item");
+            }
+        } else {
+            System.out.println("Item is not in your inventory");
+        }
+    }
+
+    public void makeFire(World world) {
+        if (inInventory("DryGrass")) {
+            if (inInventory("DryWood")) {
+                System.out.println("There is a blazing fire infront of you! You can cook food in a fire.");
+                removeInvNoOutput("DryGrass");
+                removeInvNoOutput("DryWood");
+                world.setFire(true);
+            } else {
+                System.out.println("You have no DryWood to start a fire.");
+            }
+        } else {
+            System.out.println("You have no DryGrass to start a fire.");
+        }
+    }
+
+    public void setInventory(String a) { // add item to backpack
+        int track = 0;
+        for (int i = 0; i < inventory.length; i++) {
+            if (inventory[i].equalsIgnoreCase("")) {
+                inventory[i] = a;
+                track++;
+                break;
+            }
+        }
+        if (track == 0) {
+            System.out.println("Your Backpack is full");
+        }
+    }
+
+    public void removeInvNoOutput(String a) {
+        if (inInventory(a)) {
+            for (int i = 0; i < inventory.length; i++) {
+                if (a.equalsIgnoreCase(inventory[i])) {
                     inventory[i] = "";
                     break;
                 }
@@ -92,47 +196,6 @@ public class Player extends Character {
             System.out.println("You do not have that item in your backpack, type backpack");
         }
 
-        /*
-         * for(int i = inventory.length-1; i > 0; i--){
-         if(a.equals(inventory[i])){
-         inventory[i] = "";
-         if(b == true){
-         System.out.println("You have eaten: " + a);
-         track++;
-         break;
-         }
-         System.out.println("You have dropped a " + a);
-         track++;
-         break;
-         }
-         }
-         if(track == 0){
-         System.out.println("You do not have that item in your backpack, type backpack");
-         }
-         */
-    }
-
-    public void eatFood(String a) { //eat the food
-        if (inInventory(a)) { //checking inv
-            if (isFood(a)) { //checking if food
-                hunger += foodValue(a); //eat food
-                removeInventory(a, true);
-            }
-        }
-    }
-
-    public void setInventory(String a) { // add item to backpack
-        int track = 0;
-        for (int i = 0; i < inventory.length; i++) {
-            if (inventory[i].equals("")) {
-                inventory[i] = a;
-                track++;
-                break;
-            }
-        }
-        if (track == 0) {
-            System.out.println("Your backpack is full");
-        }
     }
 
 }

@@ -3,10 +3,16 @@ import java.util.*;
 
 public class BadEvent {
 
-    public double distance;
-    Random rand = new Random();
+    private double distance;
+    private final Random rand;
+
+    public BadEvent(int seed) {
+        this.rand = new Random(seed);
+        this.distance = rand.nextInt((500 - 1) + 1) + 1;
+    }
 
     public BadEvent() {
+        this.rand = new Random();
         this.distance = rand.nextInt((500 - 1) + 1) + 1;
     }
 
@@ -14,7 +20,7 @@ public class BadEvent {
 
         distance -= (Math.random() * walked);
         if (this.distance <= 0) {
-            this.distance = rand.nextInt((500 - 1) + 1) + 1;
+            this.distance = rand.nextInt((500 - 200) + 1) + 200;
         }
 
     }
@@ -34,52 +40,111 @@ public class BadEvent {
         }
     }
 
-    public void attack(Object attacker, Object defender) { //attacking of one character to another
-        int health = ((Character) defender).getHealth();
-        ((Character) defender).setHealth(health - 1);
+    public void attack(Character attacker, Character defender) { //attacking of one character to another
+
+        defender.setHealth(-1);
     }
 
-    public void fight(Player me, Npc enemy, World world) { //fighting of two characters
+    public void fight(Player me, Npc enemy, World world) {
         boolean fight = true;
         Input.setFight(true);
 
-        for (;;) {
-            if (fight == true) {
-                if (enemy.dead()) {
-                    System.out.println("Monster is dead! You have Won!");
-                    Input.setFight(false);
-                    if (enemy.hasItem()) {
-                        System.out.println("Monster has dropped " + enemy.getItem());
-                        System.out.println("type 'grab " + enemy.getItem() + "'");
-                    }
-                    fight = false;
-                    break;
+        while (true) {
+            if (me.dead()) {
+                if (Day.getDays() == 1) {
+                    System.out.println("You are dead! You lasted " + Day.getDays() + " day.");
+                } else {
+                    System.out.println("You are dead! You lasted " + Day.getDays() + " days.");
                 }
+                Start game = new Start();
+                game.titleScreen();
+                break;
+
+            }
+            if (enemy.dead()) {
+
+                System.out.println("Monster is dead! You have Won!");
+                Input.setFight(false);
+                enemy.setHealth(2); //creates monster that is one health stronger
+
+                me.setAgility(me.getAgility() + 1); //set your stats larger since you won
+                me.setMagic(me.getMagic() + 1);
+                me.setStrength(me.getStrength() + 1);
+
+                if (enemy.hasItem()) {
+                    System.out.println("Monster has dropped " + enemy.getItem());
+                    System.out.println("type 'grab " + enemy.getItem() + "'");
+                }
+
+                break;
+            }
+
+            if (fight) {
                 attack(me, enemy);
                 fight = false;
             } else if (fight == false) {
-                if (me.dead()) {
-                    System.out.println("You have died");
-                    break;
-                }
-                System.out.println("You have been attacked");
                 attack(enemy, me);
                 fight = true;
+
             }
+
         }
+
     }
 
+    /*public void fight(Player me, Npc enemy, World world) { //fighting of two characters
+    	
+     boolean fight = true;
+     Input.setFight(true);
+
+     for (;;) {
+     if (fight == true) { //you are in a fight
+     if (enemy.dead()) { 
+     System.out.println("Monster is dead! You have Won!");
+     Input.setFight(false);
+     //enemy.setHealth(2); //creates monster that is one health stronger
+                    
+     me.setAgility(me.getAgility()+1); //set your stats larger since you won
+     me.setMagic(me.getMagic()+1);
+     me.setStrength(me.getStrength()+1);
+                    
+     if (enemy.hasItem()) {
+     System.out.println("Monster has dropped " + enemy.getItem());
+     System.out.println("type 'grab " + enemy.getItem() + "'");
+     }
+     fight = false;
+     break;
+     }
+     attack(me, enemy);
+     fight = false;
+     } else if (fight == false) {
+     if (me.dead()) {
+     System.out.println("You have died");
+     break;
+     }
+     System.out.println("You have been attacked");
+     attack(enemy, me);
+     fight = true;
+     }
+     }
+     }*/
     public void stumbledIntoMonster(Player me, Npc enemy, World world) { //#1 Stumble into fight
 
-        System.out.println("Would you like to Run or fight?");
+        System.out.print("Would you like to run or fight?\n>> ");
         Scanner keyboard = new Scanner(System.in);
         String tempString = keyboard.nextLine();
-        if (tempString.equals("fight")) {
-            fight(me, enemy, world);
-        } else if (tempString.equals("run")) {
-            world.run(me, enemy, world);
-        } else {
-            System.out.println("Please enter either run or fight. You do not have a choice.");
+        Input.setFight(true);
+        switch (tempString) {
+            case "fight":
+                fight(me, enemy, world);
+                break;
+            case "run":
+                world.run(me, enemy, world);
+
+                break;
+            default:
+                System.out.println("Please enter either run or fight. You do not have a choice.");
+
         }
 
     }
